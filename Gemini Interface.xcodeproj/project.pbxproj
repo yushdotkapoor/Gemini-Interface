@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		9D1DBB7227587662002B8AFD /* MarketsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1DBB7127587662002B8AFD /* MarketsTableViewCell.swift */; };
+		9D44E8EC275A7EB70068845B /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9D44E8EB275A7EB70068845B /* Charts */; };
+		9D44E8EE275B1AF10068845B /* Trades.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D44E8ED275B1AF10068845B /* Trades.swift */; };
+		9D44E8F0275B1DC60068845B /* TradesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D44E8EF275B1DC60068845B /* TradesTableViewCell.swift */; };
+		9D7FC3D0275C8A5A004B9CBC /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 9D7FC3CF275C8A5A004B9CBC /* FirebaseAuth */; };
+		9D7FC3D2275C8A5A004B9CBC /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 9D7FC3D1275C8A5A004B9CBC /* FirebaseDatabase */; };
+		9D7FC3D4275C8ABD004B9CBC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9D7FC3D3275C8ABD004B9CBC /* GoogleService-Info.plist */; };
 		9D8809B32757763E00DD263E /* Markets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8809B22757763E00DD263E /* Markets.swift */; };
 		9D8809B62757766800DD263E /* Portfolio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8809B52757766800DD263E /* Portfolio.swift */; };
 		9D939ADA2757776F0020918F /* Cryptocurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D939AD92757776F0020918F /* Cryptocurrency.swift */; };
@@ -33,10 +39,14 @@
 		9DEC6AF4275A29CE003477AA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DEC6AF3275A29CE003477AA /* CloudKit.framework */; };
 		9DEC6AF8275A5304003477AA /* MarketsLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DEC6AF7275A5304003477AA /* MarketsLandingPage.swift */; };
 		9DEC6AFA275A5D80003477AA /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DEC6AF9275A5D80003477AA /* Keys.swift */; };
+		9DF6EB06275B42D500819D7E /* MakeOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF6EB05275B42D500819D7E /* MakeOrder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9D1DBB7127587662002B8AFD /* MarketsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTableViewCell.swift; sourceTree = "<group>"; };
+		9D44E8ED275B1AF10068845B /* Trades.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trades.swift; sourceTree = "<group>"; };
+		9D44E8EF275B1DC60068845B /* TradesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradesTableViewCell.swift; sourceTree = "<group>"; };
+		9D7FC3D3275C8ABD004B9CBC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9D8809B22757763E00DD263E /* Markets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Markets.swift; sourceTree = "<group>"; };
 		9D8809B52757766800DD263E /* Portfolio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portfolio.swift; sourceTree = "<group>"; };
 		9D939AD92757776F0020918F /* Cryptocurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cryptocurrency.swift; sourceTree = "<group>"; };
@@ -63,6 +73,7 @@
 		9DEC6AF3275A29CE003477AA /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9DEC6AF7275A5304003477AA /* MarketsLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsLandingPage.swift; sourceTree = "<group>"; };
 		9DEC6AF9275A5D80003477AA /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		9DF6EB05275B42D500819D7E /* MakeOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeOrder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,9 +81,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D7FC3D2275C8A5A004B9CBC /* FirebaseDatabase in Frameworks */,
 				9DEC6AF4275A29CE003477AA /* CloudKit.framework in Frameworks */,
+				9D7FC3D0275C8A5A004B9CBC /* FirebaseAuth in Frameworks */,
 				9DBB57642757320A00C9EF90 /* SwiftyJSON in Frameworks */,
 				9DBB5761275731E100C9EF90 /* Alamofire in Frameworks */,
+				9D44E8EC275A7EB70068845B /* Charts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +113,9 @@
 				9D8809B22757763E00DD263E /* Markets.swift */,
 				9D1DBB7127587662002B8AFD /* MarketsTableViewCell.swift */,
 				9DEC6AF7275A5304003477AA /* MarketsLandingPage.swift */,
+				9D44E8ED275B1AF10068845B /* Trades.swift */,
+				9D44E8EF275B1DC60068845B /* TradesTableViewCell.swift */,
+				9DF6EB05275B42D500819D7E /* MakeOrder.swift */,
 				9D8809B52757766800DD263E /* Portfolio.swift */,
 			);
 			path = ViewControllers;
@@ -148,6 +165,7 @@
 				9DBB575027572B7000C9EF90 /* Assets.xcassets */,
 				9DBB575227572B7000C9EF90 /* LaunchScreen.storyboard */,
 				9DBB575527572B7000C9EF90 /* Info.plist */,
+				9D7FC3D3275C8ABD004B9CBC /* GoogleService-Info.plist */,
 			);
 			path = "Gemini Interface";
 			sourceTree = "<group>";
@@ -179,6 +197,9 @@
 			packageProductDependencies = (
 				9DBB5760275731E100C9EF90 /* Alamofire */,
 				9DBB57632757320A00C9EF90 /* SwiftyJSON */,
+				9D44E8EB275A7EB70068845B /* Charts */,
+				9D7FC3CF275C8A5A004B9CBC /* FirebaseAuth */,
+				9D7FC3D1275C8A5A004B9CBC /* FirebaseDatabase */,
 			);
 			productName = "Gemini Interface";
 			productReference = 9DBB574427572B6E00C9EF90 /* Gemini Interface.app */;
@@ -211,6 +232,8 @@
 			packageReferences = (
 				9DBB575F275731E100C9EF90 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				9DBB57622757320A00C9EF90 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				9D44E8EA275A7EB70068845B /* XCRemoteSwiftPackageReference "Charts" */,
+				9D7FC3CE275C8A5A004B9CBC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 9DBB574527572B6E00C9EF90 /* Products */;
 			projectDirPath = "";
@@ -227,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DBB575427572B7000C9EF90 /* LaunchScreen.storyboard in Resources */,
+				9D7FC3D4275C8ABD004B9CBC /* GoogleService-Info.plist in Resources */,
 				9DBB575127572B7000C9EF90 /* Assets.xcassets in Resources */,
 				9DBB574F27572B6E00C9EF90 /* Main.storyboard in Resources */,
 			);
@@ -247,13 +271,16 @@
 				9DBB5776275769B000C9EF90 /* Crypto.swift in Sources */,
 				9DBB574827572B6E00C9EF90 /* AppDelegate.swift in Sources */,
 				9DBB5774275762FE00C9EF90 /* global.swift in Sources */,
+				9D44E8F0275B1DC60068845B /* TradesTableViewCell.swift in Sources */,
 				9DBB574A27572B6E00C9EF90 /* SceneDelegate.swift in Sources */,
 				9DEC6AFA275A5D80003477AA /* Keys.swift in Sources */,
 				9D939ADA2757776F0020918F /* Cryptocurrency.swift in Sources */,
 				9DBB5768275732B900C9EF90 /* HMAC.swift in Sources */,
 				9D939ADC275779B70020918F /* DataGuzzler.swift in Sources */,
+				9D44E8EE275B1AF10068845B /* Trades.swift in Sources */,
 				9DEC6AF8275A5304003477AA /* MarketsLandingPage.swift in Sources */,
 				9DBB575E2757315B00C9EF90 /* API.swift in Sources */,
+				9DF6EB06275B42D500819D7E /* MakeOrder.swift in Sources */,
 				9DBB577227574BBB00C9EF90 /* Orders.swift in Sources */,
 				9D8809B62757766800DD263E /* Portfolio.swift in Sources */,
 				9D8809B32757763E00DD263E /* Markets.swift in Sources */,
@@ -486,6 +513,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9D44E8EA275A7EB70068845B /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		9D7FC3CE275C8A5A004B9CBC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		9DBB575F275731E100C9EF90 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -505,6 +548,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9D44E8EB275A7EB70068845B /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D44E8EA275A7EB70068845B /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
+		};
+		9D7FC3CF275C8A5A004B9CBC /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D7FC3CE275C8A5A004B9CBC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		9D7FC3D1275C8A5A004B9CBC /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D7FC3CE275C8A5A004B9CBC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
 		9DBB5760275731E100C9EF90 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9DBB575F275731E100C9EF90 /* XCRemoteSwiftPackageReference "Alamofire" */;

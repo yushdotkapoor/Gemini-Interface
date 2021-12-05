@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Charts
 
 class CoinGecko {
     static let shared = CoinGecko()
@@ -74,7 +75,7 @@ class CoinGecko {
             }
         }
         
-
+        
         for result in symbolsResults {
             if idsResults.contains(result) {
                 rating[result] = rating[result]! + 1
@@ -111,33 +112,26 @@ class CoinGecko {
         guard let coinId = coin.id else { return [] }
         
         let dictionary = await dictionary(from: "https://api.coingecko.com/api/v3/coins/\(coinId)/market_chart/range?vs_currency=usd&from=\(date1.timeIntervalSince1970)&to=\(date2.timeIntervalSince1970)")
-        
         let array = dictionary["prices"] as! [[Double]]
         
         var points:[PricePoint] = []
         for point in array {
             points.append(PricePoint(price: point[1], unixTimestamp: point[0]))
         }
+        
         return points
     }
     
-    func history(for coin:Coin) async -> [PricePoint] {
-        var points:[PricePoint] = []
-        let daysAgo = ["max"]
-        let interval = ["minutely"]
-        var index = 0
+    func history(for cryptoID:String, daysAgo:String, interval:String) async -> [ChartDataEntry] {
         
-        while index != daysAgo.count {
-            guard let coinId = coin.id else { return [] }
-            let dictionary = await dictionary(from: "https://api.coingecko.com/api/v3/coins/\(coinId)/market_chart?vs_currency=usd&days=\(daysAgo[index])%2F24&interval=\(interval[index])")
-            let array = dictionary["prices"] as! [[Double]]
-            
-            for point in array {
-                points.append(PricePoint(price: point[1], unixTimestamp: point[0]))
-            }
-            index += 1
+        let dictionary = await dictionary(from: "https://api.coingecko.com/api/v3/coins/\(cryptoID)/market_chart?vs_currency=usd&days=\(daysAgo)&interval=\(interval)")
+        let array = dictionary["prices"] as! [[Double]]
+        
+        var entries:[ChartDataEntry] = []
+        for entry in array {
+            entries.append(ChartDataEntry(x: entry[0], y: entry[1]))
         }
-        return points
+        return entries
     }
     
     private func dictionary(from url: String) async -> [String: Any] {
@@ -206,7 +200,7 @@ class PricePoint: Codable {
         self.price = price
         self.unixTimestamp = unixTimestamp
     }
-
+    
 }
 
 

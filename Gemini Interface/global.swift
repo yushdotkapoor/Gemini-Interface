@@ -7,6 +7,8 @@
 
 import Foundation
 
+var NONCE = 1.0
+
 enum Side: String {
     case buy = "buy"
     case sell = "sell"

@@ -58,12 +58,18 @@ class DataGuzzler {
     func oneTime() async {
         let geminiCoins = await Crypto.shared.GetCoins()
         
-        if let currencyCache = UserDefaults.standard.data(forKey: "currencyCache") {
-            let cache = try! PropertyListDecoder().decode([String: Cryptocurrency].self, from: currencyCache)
-            CryptoData.shared.cryptocurrencies = cache
-        }
-        
         await CoinGecko.shared.fetch()
+        
+        if let currencyCache = UserDefaults.standard.data(forKey: "currencyCache") {
+            do {
+                let cache = try PropertyListDecoder().decode([String: Cryptocurrency].self, from: currencyCache)
+                CryptoData.shared.cryptocurrencies = cache
+            } catch {
+                print(error)
+                await self.one(geminiCoins: geminiCoins)
+                return
+            }
+        }
         
         var t:[String] = []
         for i in CryptoData.shared.cryptocurrencies {
@@ -99,6 +105,7 @@ class DataGuzzler {
     
     func getCryptocurrencies() async {
         let balances = await Account.shared.CheckAvailableBalances().rawValue as! [[String: Any]]
+        let trades = await Orders.shared.GetTradesForCrypto().rawValue as! [[String:Any]]
         var cryptos:[String: Cryptocurrency] = [:]
         for i in CryptoData.shared.tickers {
             let shorti = i.substring(from: 0, to: i.count-3)
@@ -114,23 +121,17 @@ class DataGuzzler {
             })
             let holdings = dictionary["amount"] as? String ?? "0"
             let available = dictionary["availableForWithdrawal"] as? String ?? "0"
-            let averageBuyPrice = await getAverageBuyPrice(holdings: holdings, ticker: i)
+            let averageBuyPrice = getAverageBuyPrice(trades: trades, ticker: i)
+            let profits = getProfit(trades: trades, ticker: i, averageBuyPrice: Double(averageBuyPrice)!)
             let minimum = await Crypto.shared.GetSymbolDetails(ticker: i).rawValue as! [String: Any]
-            let quoteIncrement = "\(minimum["quote_increment"] ?? "0.001")"
-            let cryptocurrency = Cryptocurrency(coin: coin, holdings: holdings, averageBuyPrice: averageBuyPrice, availableForWithdrawal: available, minimum: quoteIncrement)
+            let quoteIncrement = Double("\(minimum["quote_increment"] ?? "0.001")")!
+            let tickSize = Double("\(minimum["tick_size"] ?? "0.000001")")!
+            let cryptocurrency = Cryptocurrency(coin: coin, holdings: holdings, averageBuyPrice: averageBuyPrice, availableForWithdrawal: available, minimum: quoteIncrement, tickSize: tickSize, profit: profits)
             cryptos[coin.symbol!] = cryptocurrency
         }
         CryptoData.shared.cryptocurrencies = cryptos
         
         priceFeed()
-    }
-    
-    func gummy() {
-        if let currencyCache = UserDefaults.standard.data(forKey: "currencyCache") {
-            let cache = try! PropertyListDecoder().decode([String: Cryptocurrency].self, from: currencyCache)
-            CryptoData.shared.cryptocurrencies = cache
-            print(cache)
-        }
     }
     
     @objc func priceFeed() {
@@ -161,53 +162,63 @@ class DataGuzzler {
                 CryptoData.shared.cryptocurrencies = cryptos
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
             self.priceFeed()
         })
     }
     
-    
-    func getHistory(shortTicker: String) async throws -> [PricePoint] {
-        let coin = CryptoData.shared.coins[shortTicker]!
-        var totalHistory:[PricePoint] = []
-        if let history = UserDefaults.standard.data(forKey: "\(shortTicker)_history") as? [NSData] {
-            //            let convertedHistory = try PropertyListDecoder().decode([PricePoint].self, from: history)
-            //            print(convertedHistory)
-            //            let recentEntryDate = convertedHistory.last!.date
-            //            let newHistory = await gecko.history(for: coin, from: recentEntryDate, to: Date())
-            //            totalHistory.append(contentsOf: newHistory)
-        } else {
-            let newHistory = await CoinGecko.shared.history(for: coin)
-            totalHistory.append(contentsOf: newHistory)
-        }
-        let archivedHistory = try PropertyListEncoder().encode(totalHistory)
-        UserDefaults.standard.setValue(archivedHistory, forKey: "\(shortTicker)_history")
-        return totalHistory
-    }
-    
-    func getAverageBuyPrice(holdings: String, ticker: String) async -> String {
-        let trades = await Orders.shared.GetTradesForCrypto(ticker: ticker).rawValue as! [[String:Any]]
-        let currentPrice = await Crypto.shared.GetPrice(ticker: ticker, side: Side(rawValue: "sell")!).rawValue as? String ?? "0.0"
-        
-        
-        var totalSpent = 0.0
-        var totalProfit = 0.0
+    func getProfit(trades: [[String:Any]], ticker: String, averageBuyPrice: Double) -> String {
+        var totalEarned:[Double] = []
+        var totalHoldings:[Double] = []
         for trade in trades {
             let price = trade["price"] as! String
             let amount = trade["amount"] as! String
-            let moneySpent = Double(price)! * Double(amount)!
-            let hypotheticalSell = Double(currentPrice)! * Double(amount)!
-            
             let type = trade["type"] as! String
-            if type == "buy" {
-                totalSpent += moneySpent
-                totalProfit += hypotheticalSell
-            } else {
-                totalSpent -= moneySpent
-                totalProfit -= hypotheticalSell
+            let symbol = trade["symbol"] as! String
+            let moneySpent = Double(amount)! * Double(price)!
+            
+            if type == "Sell" && symbol.lowercased() == (ticker) {
+                totalEarned.append(moneySpent)
+                totalHoldings.append(Double(amount)!)
+            }
+            
+        }
+        
+        let spendingSum = totalEarned.reduce(.zero, +)
+        let holdingsSum = totalHoldings.reduce(.zero, +)
+        
+        if holdingsSum == 0 {
+            return "0.0"
+        }
+        
+        let averageSellPrice = spendingSum / holdingsSum
+        
+        return String((averageSellPrice - averageBuyPrice) * holdingsSum)
+    }
+    
+    func getAverageBuyPrice(trades: [[String:Any]], ticker: String) -> String {
+        var totalSpent:[Double] = []
+        var totalHoldings:[Double] = []
+        for trade in trades {
+            let price = trade["price"] as! String
+            let amount = trade["amount"] as! String
+            let type = trade["type"] as! String
+            let symbol = trade["symbol"] as! String
+            let moneySpent = Double(amount)! * Double(price)!
+            
+            if type == "Buy" && symbol.lowercased() == (ticker) {
+                totalSpent.append(moneySpent)
+                totalHoldings.append(Double(amount)!)
             }
         }
-        return String((totalSpent - totalProfit) / Double(holdings)!)
+        
+        let spendingSum = totalSpent.reduce(.zero, +)
+        let holdingsSum = totalHoldings.reduce(.zero, +)
+        
+        if holdingsSum == 0 {
+            return "0.0"
+        }
+        return String(spendingSum / holdingsSum)
     }
 }
 

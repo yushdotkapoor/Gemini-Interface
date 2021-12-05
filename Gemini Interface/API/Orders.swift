@@ -12,7 +12,7 @@ import Alamofire
 class Orders: Decodable {
     static let shared = Orders()
     
-    func GetTradesForCrypto(ticker:String, limit_trades:Int?=50) async -> JSON {
+    func GetTradesForCrypto(ticker:String="BTCUSD", limit_trades:Int?=50) async -> JSON {
         var jData:JSON = JSON()
         let endpoint = API.Endpoints.MyTrades(())
         let payload:[String : Any] = ["request": endpoint.path,
@@ -35,7 +35,7 @@ class Orders: Decodable {
     
     func CancelAllSessionOrders() async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.CancelSessionOrders(())
         let payload:[String : Any] = ["request": endpoint.path]
         
         let apiRequest = await withCheckedContinuation { continuation in
@@ -55,7 +55,7 @@ class Orders: Decodable {
     
     func CancelAllActiveOrders() async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.CancelActiveOrders(())
         let payload:[String : Any] = ["request": endpoint.path]
         
         let apiRequest = await withCheckedContinuation { continuation in
@@ -76,7 +76,7 @@ class Orders: Decodable {
     
     func CancelOrder(orderId:String) async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.CancelOrder(())
         let payload:[String : Any] = ["request": endpoint.path,
                                       "order_id": orderId]
         
@@ -98,7 +98,7 @@ class Orders: Decodable {
     
     func OrderStatus(orderId:String) async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.OrderStatus(())
         let payload:[String : Any] = ["request": endpoint.path,
                                       "order_id": orderId]
         
@@ -119,7 +119,7 @@ class Orders: Decodable {
     
     func ActiveOrders() async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.ActiveOrders(())
         let payload:[String : Any] = ["request": endpoint.path]
         
         let apiRequest = await withCheckedContinuation { continuation in
@@ -140,17 +140,19 @@ class Orders: Decodable {
     
     func Order(ticker:String, quantity:String, side:Side, price:String?=nil, stopLimitPrice:String?=nil, minAmount:String?=nil, options:[String]?=nil) async -> JSON {
         var jData:JSON = JSON()
-        let endpoint = API.Endpoints.MyTrades(())
+        let endpoint = API.Endpoints.OrderNew(())
+        print(ticker)
         var payload:[String : Any] = [  "client_order_id": GenerateOrderID(),
                                         "request": endpoint.path,
                                         "symbol": ticker,
                                         "amount": quantity,
-                                        "side": side]
+                                        "side": side.rawValue
+        ]
         
         if (price != nil) {
             payload["price"] = price
         } else {
-            payload["price"] = await Crypto.shared.GetPrice(ticker: ticker, side: side)
+            payload["price"] = await Crypto.shared.GetPrice(ticker: ticker, side: side).rawValue
         }
         if (stopLimitPrice != nil) {
             payload["type"] = "exchange stop limit"
@@ -165,8 +167,9 @@ class Orders: Decodable {
             payload["options"] = options
         }
         
+        let headers = API.createHeaders(request: endpoint.path, withAdditionalData: try! JSON(data: try! JSONSerialization.data(withJSONObject: payload)))
         let apiRequest = await withCheckedContinuation { continuation in
-            AF.request(endpoint.url, method: endpoint.method, parameters: payload, headers: endpoint.headers).validate().responseData { apiRequest in
+            AF.request(endpoint.url, method: endpoint.method, parameters: payload, headers: headers).responseData { apiRequest in
                 continuation.resume(returning: apiRequest)
             }
         }
@@ -175,7 +178,7 @@ class Orders: Decodable {
             let data = try JSONDecoder().decode(JSON.self, from: apiRequest.data!)
             jData = data
         } catch {
-            print("error")
+            print("error \(error)")
         }
         return jData
     }

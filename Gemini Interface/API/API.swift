@@ -125,10 +125,11 @@ class API {
      
      - returns: the http headers for the request
     */
-    private static func createHeaders(request: String, withAdditionalData additionalData: JSON? = nil) -> HTTPHeaders {
+    public static func createHeaders(request: String, withAdditionalData additionalData: JSON? = nil) -> HTTPHeaders {
         
         var payload = additionalData ?? JSON()
-        let nonce = Int64(Date().timeIntervalSince1970 * 1000)
+        let nonce = Int64((Date().timeIntervalSince1970 * 1000) + NONCE)
+        NONCE += 1.0
         payload["request"] = JSON(request)
         payload["nonce"]  = JSON(String(nonce))
         let payloadb64 = payload.serialize().toBase64()
@@ -136,9 +137,9 @@ class API {
         var headerArray:[HTTPHeader] = []
         headerArray.append(HTTPHeader(name: "Content-Type", value: "text/plain"))
         headerArray.append(HTTPHeader(name: "Content-Length", value: "0"))
-        headerArray.append(HTTPHeader(name: "X-GEMINI-APIKEY", value: apiKey))
+        headerArray.append(HTTPHeader(name: "X-GEMINI-APIKEY", value: API.apiKey))
         headerArray.append(HTTPHeader(name: "X-GEMINI-PAYLOAD", value: payloadb64))
-        headerArray.append(HTTPHeader(name: "X-GEMINI-SIGNATURE", value: payloadb64.hmac(algorithm: .SHA384, key: apiSecret)))
+        headerArray.append(HTTPHeader(name: "X-GEMINI-SIGNATURE", value: payloadb64.hmac(algorithm: .SHA384, key: API.apiSecret)))
         headerArray.append(HTTPHeader(name: "Cache-Control", value: "no-cache"))
         
         let headers:HTTPHeaders = HTTPHeaders(headerArray)

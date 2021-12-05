@@ -12,17 +12,17 @@ class Cryptocurrency: Codable {
     var holdings: String
     var averageBuyPrice: String
     var availableForWithdrawal: String
-    var minimum: String
+    var minimum: Double
+    var tickSize: Double
+    var profit: String
     
-    var worth: Float?
-    
-    init(coin: Coin, holdings: String, averageBuyPrice: String, availableForWithdrawal: String, minimum: String) {
+    init(coin: Coin, holdings: String, averageBuyPrice: String, availableForWithdrawal: String, minimum: Double, tickSize: Double, profit: String) {
         self.coin = coin
         self.holdings = holdings
         self.averageBuyPrice = averageBuyPrice
         self.availableForWithdrawal = availableForWithdrawal
         self.minimum = minimum
-        
-        self.worth = (Float(holdings) ?? 0 * Float(averageBuyPrice)!)
+        self.tickSize = tickSize
+        self.profit = profit
     }
 }
