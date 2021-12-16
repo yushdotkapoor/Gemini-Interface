@@ -174,6 +174,7 @@ class Orders: Decodable {
             }
         }
         
+   
         do {
             let data = try JSONDecoder().decode(JSON.self, from: apiRequest.data!)
             jData = data
@@ -182,6 +183,7 @@ class Orders: Decodable {
         }
         return jData
     }
+    
 }
 
 

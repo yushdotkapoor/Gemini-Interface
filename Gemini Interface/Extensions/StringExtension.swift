@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 extension String {
     
@@ -47,5 +47,22 @@ extension String {
     
     mutating func appendPath(path: String) {
         self.append((self.last == "/" || path.first == "/" ? "":"/") + path + (path.last == "/" ? "" : "/"))
+    }
+    
+    func width(usingFont font: UIFont) -> CGFloat {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        let size = self.size(withAttributes: fontAttributes)
+        return size.width + 1
+    }
+    
+    func height(usingFont font: UIFont) -> CGFloat {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        let size = self.size(withAttributes: fontAttributes)
+        return size.height
+    }
+    
+    func getSize(usingFont font: UIFont) -> CGSize {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        return self.size(withAttributes: fontAttributes)
     }
 }

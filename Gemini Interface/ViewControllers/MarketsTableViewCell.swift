@@ -86,21 +86,13 @@ class MarketsTableViewCell: UITableViewCell, ChartViewDelegate {
         }
     }
     
+    
     func setCharts() {
-        print("soi")
-        let chartStatus = UserDefaults.standard.bool(forKey: "chartsEnabled")
-        if chartStatus {
-            chart.isHidden = false
-        } else {
-            chart.isHidden = true
-        }
-        
         getData()
         
         chart.delegate = self
         chart.isUserInteractionEnabled = false
         
-        chart.backgroundColor = .secondarySystemBackground
         chart.xAxis.enabled = false
         chart.rightAxis.enabled = false
         chart.leftAxis.enabled = false
@@ -109,6 +101,7 @@ class MarketsTableViewCell: UITableViewCell, ChartViewDelegate {
         chart.layer.cornerRadius = 20
         chart.layer.masksToBounds = true
     }
+    
 
 deinit {
     UserDefaults.standard.removeObserver(self, forKeyPath: "chartsEnabled")

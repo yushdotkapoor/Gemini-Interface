@@ -24,7 +24,6 @@ class Markets: UIViewController, UITableViewDelegate, UITableViewDataSource  {
         CryptoData.shared.update = updateData
         
         updateData()
-        isInitialized = true
         updateChartData()
         
         tableView.delegate = self
@@ -36,14 +35,18 @@ class Markets: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     func updateChartData() {
         async {
+            let allData = try await Database.database().reference().getData().value as! NSDictionary
+            
             for i in data! {
                 let cryptoName = i.coin.symbol!.lowercased() + "usd"
-                let historicalData = try await Database.database().reference().child(cryptoName).getData().value as! [String:String]
+                let historicalData = allData[cryptoName] as! [String:String]
                 
                 var entries:[ChartDataEntry] = []
                 for entry in historicalData.keys {
                     entries.append(ChartDataEntry(x: Double(entry)!, y: Double(historicalData[entry]!)!))
                 }
+                entries = entries.sorted(by: {$0.x < $1.x})
+                
                 dataEntries[cryptoName] = entries
             }
         }
@@ -67,13 +70,14 @@ class Markets: UIViewController, UITableViewDelegate, UITableViewDataSource  {
         if isInitialized {
             updateChartData()
         }
+        isInitialized = true
     }
     
     func updateData() {
         data = Array(CryptoData.shared.cryptocurrencies.values)
         data = data?.sorted(by: {$0.coin.marketCapRank ?? Double(CoinGecko.shared.allCoins.count) < $1.coin.marketCapRank ?? Double(CoinGecko.shared.allCoins.count)})
         DispatchQueue.main.async {
-           // self.tableView.reloadData()
+            self.tableView.reloadData()
         }
     }
     
@@ -128,7 +132,14 @@ class Markets: UIViewController, UITableViewDelegate, UITableViewDataSource  {
         let url = URL(string: (indexedCell?.coin.imageURL)!)
         cell.imgView.image = UIImage(data: try! Data(contentsOf: url!))
         
+        let chartStatus = UserDefaults.standard.bool(forKey: "chartsEnabled")
+        if chartStatus {
+            cell.chart.isHidden = false
+        } else {
+            cell.chart.isHidden = true
+        }
         cell.setCharts()
+        
         
         return cell
     }

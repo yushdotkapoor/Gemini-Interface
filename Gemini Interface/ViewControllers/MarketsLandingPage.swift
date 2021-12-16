@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Charts
+import Firebase
 
 class MarketsLandingPage: UIViewController, ChartViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -30,6 +31,7 @@ class MarketsLandingPage: UIViewController, ChartViewDelegate, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CryptoData.shared.update = updatePriceLabels
         doForCharts()
         doForGeneral()
     }
@@ -42,8 +44,6 @@ class MarketsLandingPage: UIViewController, ChartViewDelegate, UITableViewDelega
     }
     
     func doForCharts() {
-        CryptoData.shared.update = updatePriceLabels
-        
         setupLabels()
         
         getData()

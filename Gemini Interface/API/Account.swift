@@ -78,7 +78,7 @@ class Account:Decodable {
     }
     
     
-    func CheckTransfers(LimitTransfers:Int?=10, ShowCompleteDepositAdvances:Bool?=false) async -> JSON {
+    func CheckTransfers(LimitTransfers:Int?=20, ShowCompleteDepositAdvances:Bool?=false) async -> JSON {
         var jData:JSON = JSON()
         let endpoint = API.Endpoints.Transfers(())
         
